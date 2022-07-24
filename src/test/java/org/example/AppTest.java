@@ -2,7 +2,9 @@ package org.example;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ParameterContext;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.aggregator.AggregateWith;
 import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
@@ -26,7 +28,7 @@ import static org.assertj.core.api.Assertions.*;
 /**
  * Unit test for simple App.
  */
-
+// @ExtendWith(FindTestExtension.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class) // 테스트 이름 지어주는 전략
 @TestInstance(TestInstance.Lifecycle.PER_CLASS) // 테스트간 의존성이 필요한 경우에 사요
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class) // 테스트 순서를 지정 없다고 해서
@@ -35,6 +37,9 @@ public class AppTest
     /**
      * Rigorous Test :-)
      */
+
+    @RegisterExtension // instance를 만들어야 할 때
+    static FindTestExtension findTestExtension = new FindTestExtension(1005L);
 
     @BeforeAll // 통합 테스트 전에 실행
     static void beforeAll(){
@@ -177,7 +182,8 @@ public class AppTest
 
     @Test
     @Order(2)
-    public void instance_test(){
+    public void instance_test() throws InterruptedException {
+        Thread.sleep(1005L);
         System.out.println("value " + value++);
     }
 
