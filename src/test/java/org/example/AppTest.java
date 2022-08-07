@@ -1,8 +1,9 @@
 package org.example;
 
+import org.example.domain.Study;
+import org.example.study.StudyStatus;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.*;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -10,9 +11,6 @@ import org.junit.jupiter.params.aggregator.AggregateWith;
 import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
 import org.junit.jupiter.params.aggregator.ArgumentsAggregationException;
 import org.junit.jupiter.params.aggregator.ArgumentsAggregator;
-import org.junit.jupiter.params.converter.ArgumentConversionException;
-import org.junit.jupiter.params.converter.ConvertWith;
-import org.junit.jupiter.params.converter.SimpleArgumentConverter;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.NullSource;
@@ -113,7 +111,7 @@ public class AppTest
             // 조건 만큼 ( 위의 10 밀리세컨드만 확인하고 테스트 결과가 나타남 )
         });
 
-        assertThat(new Study(StudyStatus.DRAFT, 10, "자바").getLimit()).isGreaterThan(0);
+        assertThat(new Study(10, "자바").getLimit()).isGreaterThan(0);
     }
 
     @Disabled
@@ -127,7 +125,7 @@ public class AppTest
         assumeTrue("LOCAL".equalsIgnoreCase(System.getenv("TEST_ENV")));
 
         assumingThat("LOCAL".equalsIgnoreCase(System.getenv("TEST_ENV")), () -> {
-            assertThat(new Study(StudyStatus.DRAFT, 10, "자바").getLimit()).isGreaterThan(0);
+            assertThat(new Study(10, "자바").getLimit()).isGreaterThan(0);
         });
     }
 
