@@ -6,6 +6,7 @@ import org.example.member.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -110,5 +111,13 @@ public class StudyServiceTest {
 
         studyService.createNewStudy(1L, study);
         assertEquals(member, study.getOwner());
+
+        verify(memberService, times(1)).notify(study); // 몇번 호출 하는지 확인
+        verify(memberService, never()).validate(any()); // 호출 되지 않음
+
+        InOrder inOrder = inOrder(memberService);
+        inOrder.verify(memberService).notify(study); // studyService createNewStudy 메소드를 보면 notify(study)를 먼저 수행하고
+        inOrder.verify(memberService).notify(member); // notify(member)를 다음에 실행해준다.
+
     }
 }
