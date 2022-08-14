@@ -40,4 +40,9 @@ public class Study {
             return this.limit;
         }
     }
+
+    public void open() {
+        this.openedDateTime = LocalDateTime.now();
+        this.status = StudyStatus.OPENED;
+    }
 }

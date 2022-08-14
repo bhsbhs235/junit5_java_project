@@ -15,6 +15,8 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class) // 추가해줘야 @Mock 애노테이션이 적용된다.
@@ -93,7 +95,9 @@ public class StudyServiceTest {
 
     @Test
     @DisplayName("Mock Stubbing 연습문제")
+        // BDD( Behavior Driven Development)
     void example1(){
+        // Given
         StudyService studyService = new StudyService(memberService, studyRepository);
         assertNotNull(studyService);
 
@@ -103,21 +107,49 @@ public class StudyServiceTest {
         member.setId(1L);
         member.setEmail("bhsbhs235@github.com");
 
-        when(memberService.findById(1L))
-                .thenReturn(Optional.of(member));
+        when(memberService.findById(1L)).thenReturn(Optional.of(member));
+        //given(memberService.findById(1L)).willReturn(Optional.of(member)); (BDD)
 
-        when(studyRepository.save(study))
-                .thenReturn(study);
+        when(studyRepository.save(study)).thenReturn(study);
+        //given(studyRepository.save(study)).willReturn(study);  (BDD)
 
+        // when
         studyService.createNewStudy(1L, study);
+
+        // then
         assertEquals(member, study.getOwner());
 
         verify(memberService, times(1)).notify(study); // 몇번 호출 하는지 확인
+        // then(memberService).should(times(1)).notify(study);  (BDD)
         verify(memberService, never()).validate(any()); // 호출 되지 않음
+        //then(memberService).shouldHaveNoMoreInteractions();  (BDD)
 
         InOrder inOrder = inOrder(memberService);
         inOrder.verify(memberService).notify(study); // studyService createNewStudy 메소드를 보면 notify(study)를 먼저 수행하고
         inOrder.verify(memberService).notify(member); // notify(member)를 다음에 실행해준다.
 
+    }
+
+    @Test
+    @DisplayName("Mockito 연습문제")
+    public void mockitoPractice() {
+        // given
+        StudyService studyService = new StudyService(memberService, studyRepository);
+        Study study = new Study(10, "mockito");
+        // 문제 : studyRepository Mock 객체의 save 메서드 호출시 study를 리턴하도록 만들기
+        given(studyRepository.save(study)).willReturn(study);
+
+        // when
+        studyService.openStudy(study);
+
+        // then
+        // 문제 : study의 status가 OPENED로 변경됐는지 확인
+        assertEquals(study.getStatus(), StudyStatus.OPENED);
+
+        // 문제 : study의 openedDateTime이 null이 아닌지 확인
+        assertNotNull(study.getOpenedDateTime());
+
+        // 문제 : memberService의 notify(study)가 호출 됐는지 확인
+        then(memberService).should().notify(study);
     }
 }

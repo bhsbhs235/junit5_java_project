@@ -1,5 +1,5 @@
 package org.example.study;
 
 public enum StudyStatus {
-    DRAFT, STATED,
+    DRAFT, STATED, OPENED
 }
